@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es5", // 指定ECMAScript目标版本
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ], // 要包含在编译中的依赖库文件列表
+    "module": "esnext", // 指定模块化类型
+    "declaration": false, // 生成 `.d.ts` 文件
+    "outDir": "./dist", // 编译后生成的文件目录
+    "strict": true, // 开启严格的类型检测
+    "allowJs": true,
+    "jsx": "preserve",
+    "moduleResolution": "node", // 使用 Node.js 风格解析模块
+    "resolveJsonModule": true, // 允许使用 .json 扩展名导入的模块
+    "sourceMap": true, // 生成相应的.map文件
+    "noUnusedLocals": false, // 报告未使用的本地变量的错误
+    "noUnusedParameters": true, // 报告未使用参数的错误
+    "experimentalDecorators": true, // 启用对ES装饰器的实验性支持
+    "skipLibCheck": true,
+    "noImplicitThis": false,
+  },
+  "include": [
+    "./src/**/*", // *** TypeScript文件应该进行类型检查 ***
+    "./anerform.d.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
