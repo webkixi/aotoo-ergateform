@@ -1,5 +1,13 @@
 ## ErgateForm
 
+```bash
+npm install @aotoo/ergateform
+
+# or
+
+yarn add @aotoo/ergateform
+```
+
 `ErgateForm` 是配置化的 `antd form(react)` 组件。通过配置化生成表单，实现了表单联动、动态表单功能，表单属性仍沿用 antd form 各个组件的属性
 
 ### 简单表单
