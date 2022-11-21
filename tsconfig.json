@@ -11,7 +11,7 @@
     "outDir": "./dist", // 编译后生成的文件目录
     "strict": true, // 开启严格的类型检测
     "allowJs": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "moduleResolution": "node", // 使用 Node.js 风格解析模块
     "resolveJsonModule": true, // 允许使用 .json 扩展名导入的模块
     "sourceMap": true, // 生成相应的.map文件
