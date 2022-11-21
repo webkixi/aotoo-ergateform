@@ -1,11 +1,11 @@
-## AnerForm
+## ErgateForm
 
-`AnerForm` 是配置化的 `antd form(react)` 组件。通过配置化生成表单，实现了表单联动、动态表单功能，表单属性仍沿用 antd form 各个组件的属性
+`ErgateForm` 是配置化的 `antd form(react)` 组件。通过配置化生成表单，实现了表单联动、动态表单功能，表单属性仍沿用 antd form 各个组件的属性
 
 ### 简单表单
 
 ```javascript
-import AnerForm from '@aotoo/anerform'
+import ErgateForm from '@aotoo/ergateform'
 import {Form}  from 'antd'
 
 function App(){
@@ -28,7 +28,7 @@ function App(){
   }
 
   return (
-    <AnerForm {...formConfig}/>
+    <ErgateForm {...formConfig}/>
   )
 }
 ```
@@ -38,7 +38,7 @@ function App(){
 表单值同步
 
 ```javascript
-import AnerForm from '@aotoo/anerform'
+import ErgateForm from '@aotoo/ergateform'
 import {Form}  from 'antd'
 
 function App(){
@@ -76,7 +76,7 @@ function App(){
   }
 
   return (
-    <AnerForm {...formConfig}/>
+    <ErgateForm {...formConfig}/>
   )
 }
 ```
@@ -132,7 +132,7 @@ function App(){
 
 ### Form 结构
 
-antd form 最终都会生成`<Form>...</Form>`结构，在`AnerForm`中使用最外层的非`data`属性来配置 Form
+antd form 最终都会生成`<Form>...</Form>`结构，在`ErgateForm`中使用最外层的非`data`属性来配置 Form
 
 **配置**
 
@@ -145,11 +145,11 @@ const formConfig = {
   data: [...]  // data用来配置 Form.Item 集合
 }
 
-return <AnerForm {...formConfig}/>
+return <ErgateForm {...formConfig}/>
 
 // or
 
-return <AnerForm
+return <ErgateForm
   labelCol= {{span: 8}}
   wrapperCol={{span: 16}}
   layout={'horizontal'}
@@ -257,7 +257,7 @@ union('target-name', callback);
 **示例 code**
 
 ```javascript
-import AnerForm {union} from '@aotoo/anerform'
+import ErgateForm {union} from '@aotoo/ergateform'
 import {Form} from 'antd'
 
 function App(){
@@ -287,7 +287,7 @@ function App(){
     ]
   }
 
-  return <AnerForm {...formConfig}/>
+  return <ErgateForm {...formConfig}/>
 }
 
 return <App />

@@ -11,7 +11,7 @@ import { adapterItemConfig, adapterConfig } from './parse';
  *   }
  * }
  */
-function AnerForm(formConfig: FormType) {
+function ErgateForm(formConfig: FormType) {
   const [_form] = Form.useForm();
   const { data, ...restField } = formConfig;
   const formProperty = restField;
@@ -183,4 +183,4 @@ export function formList(listConfig: ListType) {
   };
 }
 
-export default AnerForm;
+export default ErgateForm;

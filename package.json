@@ -1,9 +1,9 @@
 {
-  "name": "@aotoo/anerform",
+  "name": "@aotoo/ergateform",
   "version": "1.0.2",
   "description": "",
   "main": "./dist/index.js",
-  "types": "./anerform.d.ts",
+  "types": "./ergateform.d.ts",
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc"

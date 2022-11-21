@@ -32,7 +32,7 @@ import { adapterItemConfig, adapterConfig } from './parse';
  *   }
  * }
  */
-function AnerForm(formConfig) {
+function ErgateForm(formConfig) {
     var _form = Form.useForm()[0];
     var data = formConfig.data, restField = __rest(formConfig, ["data"]);
     var formProperty = restField;
@@ -173,5 +173,5 @@ export function formList(listConfig) {
         },
     };
 }
-export default AnerForm;
+export default ErgateForm;
 //# sourceMappingURL=index.js.map
