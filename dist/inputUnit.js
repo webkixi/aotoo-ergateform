@@ -31,7 +31,6 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 };
 import * as React from 'react';
 import { Button, Form, Input, Cascader, Select, AutoComplete, InputNumber, Radio, Checkbox, Rate, Slider, Switch, TimePicker, TreeSelect, DatePicker, } from 'antd';
-import 'antd/dist/antd.css';
 var TextArea = Input.TextArea;
 var Search = Input.Search;
 var Group = Input.Group;

@@ -23,6 +23,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 import * as React from 'react';
 import { Form, Space } from 'antd';
 import { adapterItemConfig, adapterConfig } from './parse';
+import 'antd/dist/reset.css';
 /**
  * union: {
  *   target: '',

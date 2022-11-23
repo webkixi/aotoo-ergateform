@@ -17,7 +17,6 @@ import {
   DatePicker,
   Space,
 } from 'antd';
-import 'antd/dist/antd.css';
 const TextArea = Input.TextArea;
 const Search = Input.Search;
 const Group = Input.Group;
