@@ -32,16 +32,18 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 import * as React from 'react';
 import attrUnion from './attrUnion';
 import InputUnitElement from './inputUnit';
-export function adapterItemConfig(current, data, index) {
+export function adapterItemConfig(current, data, selectOp, index) {
     var directUnions = [];
     var flatFormNames = [];
     var flatChilds = [];
     if (current.name && current.type !== 'direct-union-callback') {
         flatFormNames.push(current.name);
         if (index) {
+            var $input = current['$input'];
             flatChilds.push({
                 name: current.name,
                 path: index,
+                type: $input.type,
             });
         }
     }
@@ -54,7 +56,7 @@ export function adapterItemConfig(current, data, index) {
                 }
                 else {
                     subItem.key = _key;
-                    var res = adapterItemConfig(subItem, data, index ? __spreadArray(__spreadArray([], index, true), [jj], false) : undefined);
+                    var res = adapterItemConfig(subItem, data, selectOp, index ? __spreadArray(__spreadArray([], index, true), [jj], false) : undefined);
                     directUnions = directUnions.concat(res.directUnions);
                     flatFormNames = flatFormNames.concat(res.flatFormNames);
                     flatChilds = flatChilds.concat(res.flatChilds);
@@ -76,7 +78,7 @@ export function adapterItemConfig(current, data, index) {
                 var accessUnion = true;
                 if (Array.isArray($input)) {
                     $input.forEach(function () {
-                        var res = adapterItemConfig(current, $input);
+                        var res = adapterItemConfig(current, $input, selectOp);
                         return res.current;
                     });
                     accessUnion = false;
@@ -93,7 +95,7 @@ export function adapterItemConfig(current, data, index) {
             inputEle = $input;
         }
         else {
-            inputEle = React.createElement(InputUnitElement, __assign({ selfUnion: union }, $input));
+            inputEle = (React.createElement(InputUnitElement, __assign({ selfUnion: union }, $input, { selectOp: selectOp })));
         }
         return {
             current: __assign({ label: label, name: name_1, inputElement: inputEle, key: _key }, restField),
@@ -114,7 +116,7 @@ export function adapterItemConfig(current, data, index) {
     }
     return { current: current, directUnions: directUnions, flatFormNames: flatFormNames, flatChilds: flatChilds };
 }
-export function adapterConfig(data) {
+export function adapterConfig(data, selectOp) {
     var fields = [];
     var directUnions = [];
     var flatFormNames = []; // 扁平化所有表单的name
@@ -127,7 +129,7 @@ export function adapterConfig(data) {
         }
         else {
             item.key = _key;
-            var result = adapterItemConfig(item, data, [ii]);
+            var result = adapterItemConfig(item, data, selectOp, [ii]);
             directUnions = __spreadArray(__spreadArray([], directUnions, true), result.directUnions, true);
             flatFormNames = __spreadArray(__spreadArray([], flatFormNames, true), result.flatFormNames, true);
             flatChilds = __spreadArray(__spreadArray([], flatChilds, true), result.flatChilds, true);

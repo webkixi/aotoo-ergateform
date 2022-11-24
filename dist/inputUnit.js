@@ -111,17 +111,23 @@ function generateInput(inputConfig) {
 }
 var InputUnitElement = function (props) {
     var form = Form.useFormInstance();
-    var unionEvnets = props.unionEvnets, selfUnion = props.selfUnion, restField = __rest(props, ["unionEvnets", "selfUnion"]);
+    var unionEvnets = props.unionEvnets, selfUnion = props.selfUnion, selectOp = props.selectOp, restField = __rest(props, ["unionEvnets", "selfUnion", "selectOp"]);
+    var _a = React.useState(restField.options || []), opts = _a[0], setOpts = _a[1];
+    var util = {
+        getForm: function () {
+            return __assign(__assign({}, form), { setOptions: function (id, options) {
+                    selectOp.setOptions(id, options);
+                } });
+        },
+    };
+    if (restField.type === 'select') {
+        selectOp.setAction(restField.id, setOpts);
+        restField.options = opts;
+    }
     var eventHandle = function (callback) {
         return function () {
             var args = arguments;
-            callback.apply(this, __spreadArray(__spreadArray([], args, true), [
-                {
-                    getForm: function () {
-                        return form;
-                    },
-                },
-            ], false));
+            callback.apply(this, __spreadArray(__spreadArray([], args, true), [util], false));
         };
     };
     if (unionEvnets && unionEvnets.length) {

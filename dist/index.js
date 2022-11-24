@@ -20,10 +20,41 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 import * as React from 'react';
 import { Form, Space } from 'antd';
 import { adapterItemConfig, adapterConfig } from './parse';
 import 'antd/dist/reset.css';
+function useSelectOprate() {
+    var data = React.useRef([]);
+    function setAction(id, func) {
+        var target = data.current.filter(function (item) { return item.id === id; });
+        if (!target.length) {
+            data.current = __spreadArray(__spreadArray([], data.current, true), [{ id: id, action: func }], false);
+        }
+    }
+    function setOptions(id, option) {
+        var target = data.current.filter(function (item) { return item.id === id; });
+        if (target.length) {
+            var action = target[0].action;
+            action(option);
+        }
+    }
+    return [
+        {
+            setAction: setAction,
+            setOptions: setOptions,
+        },
+    ];
+}
 /**
  * union: {
  *   target: '',
@@ -35,6 +66,7 @@ import 'antd/dist/reset.css';
  */
 function ErgateForm(formConfig) {
     var _form = Form.useForm()[0];
+    var selectOp = useSelectOprate()[0];
     var data = formConfig.data, restField = __rest(formConfig, ["data"]);
     var formProperty = restField;
     var form = _form;
@@ -47,10 +79,12 @@ function ErgateForm(formConfig) {
     var __id__ = React.useState('bind custom callback')[0];
     var formContext = {
         getForm: function () {
-            return form;
+            return __assign(__assign({}, form), { setOptions: function (id, options) {
+                    selectOp.setOptions(id, options);
+                } });
         },
     };
-    var _a = adapterConfig(data), fields = _a.fields, directUnions = _a.directUnions, flatFormNames = _a.flatFormNames, flatChilds = _a.flatChilds;
+    var _a = adapterConfig(data, selectOp), fields = _a.fields, directUnions = _a.directUnions, flatFormNames = _a.flatFormNames, flatChilds = _a.flatChilds;
     var formWatcher = {};
     for (var ii = 0; ii < directUnions.length; ii++) {
         var _b = directUnions[ii], eventName = _b[0], name_1 = _b[1];
@@ -138,8 +172,9 @@ export function union(name, callback) {
         directUnionCallback: callback,
     };
 }
-export function formItem(itemConfig) {
-    var res = adapterItemConfig(itemConfig, [itemConfig]);
+var FormItem = function (props) {
+    var selectOp = useSelectOprate()[0];
+    var res = adapterItemConfig(__assign({}, props), [__assign({}, props)], selectOp);
     var _a = res.current, key = _a.key, inputElement = _a.inputElement, restField = __rest(_a, ["key", "inputElement"]);
     if (Array.isArray(inputElement)) {
         return (React.createElement(Space, __assign({ key: key }, restField), inputElement.map(function (sub) {
@@ -156,6 +191,36 @@ export function formItem(itemConfig) {
         })));
     }
     return (React.createElement(Form.Item, __assign({}, restField, { key: key }), inputElement));
+};
+export function formItem(itemConfig) {
+    return React.createElement(FormItem, __assign({}, itemConfig));
+    // const res = adapterItemConfig(itemConfig, [itemConfig]);
+    // const { key, inputElement, ...restField } = res.current;
+    // if (Array.isArray(inputElement)) {
+    //   return (
+    //     <Space key={key} {...restField}>
+    //       {inputElement.map((sub) => {
+    //         if (sub.type === 'direct-union-callback') {
+    //           return sub.memo;
+    //         } else if (React.isValidElement(sub)) {
+    //           return sub;
+    //         } else {
+    //           const { key, inputElement, ...restField } = sub;
+    //           return (
+    //             <Form.Item {...restField} key={key}>
+    //               {inputElement}
+    //             </Form.Item>
+    //           );
+    //         }
+    //       })}
+    //     </Space>
+    //   );
+    // }
+    // return (
+    //   <Form.Item {...restField} key={key}>
+    //     {inputElement}
+    //   </Form.Item>
+    // );
 }
 export function formList(listConfig) {
     var formListConfig = __assign({}, listConfig);
