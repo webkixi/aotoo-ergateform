@@ -1,5 +1,5 @@
 interface InputType {
-  type?: string;
+  type: string;
   unionEvnets?: string[];
   selfUnion?: any;
   $input?: any;
@@ -23,3 +23,14 @@ interface FormType {
   data: ItemType[];
   [propName: string]: any;
 }
+
+type SelectActionType = {
+  id: string;
+  action: any;
+};
+
+type OptionsType = {
+  label: string;
+  value: string | number;
+  [propName: string]: any;
+};

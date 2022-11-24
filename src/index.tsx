@@ -3,6 +3,30 @@ import { Form, Space } from 'antd';
 import { adapterItemConfig, adapterConfig } from './parse';
 import 'antd/dist/reset.css';
 
+function useSelectOprate() {
+  const data: any = React.useRef([]);
+  function setAction(id: string, func: any) {
+    const target = data.current.filter((item: OptionsType) => item.id === id);
+    if (!target.length) {
+      data.current = [...data.current, { id, action: func }];
+    }
+  }
+
+  function setOptions(id: string, option: OptionsType[]) {
+    const target: SelectActionType[] = data.current.filter((item: OptionsType) => item.id === id);
+    if (target.length) {
+      const action = target[0].action;
+      action(option);
+    }
+  }
+
+  return [
+    {
+      setAction,
+      setOptions,
+    },
+  ];
+}
 /**
  * union: {
  *   target: '',
@@ -14,6 +38,7 @@ import 'antd/dist/reset.css';
  */
 function ErgateForm(formConfig: FormType) {
   const [_form] = Form.useForm();
+  const [selectOp] = useSelectOprate();
   const { data, ...restField } = formConfig;
   const formProperty = restField;
   let form = _form;
@@ -25,11 +50,19 @@ function ErgateForm(formConfig: FormType) {
   const [__id__] = React.useState('bind custom callback');
   const formContext = {
     getForm() {
-      return form;
+      return {
+        ...form,
+        setOptions(id: string, options: OptionsType[]) {
+          selectOp.setOptions(id, options);
+        },
+      };
     },
   };
 
-  let { fields, directUnions, flatFormNames, flatChilds } = adapterConfig(data);
+  let { fields, directUnions, flatFormNames, flatChilds } = adapterConfig(
+    data,
+    selectOp
+  );
   const formWatcher: { [propName: string]: any } = {};
 
   for (let ii = 0; ii < directUnions.length; ii++) {
@@ -135,8 +168,9 @@ export function union(name: string, callback: any) {
   };
 }
 
-export function formItem(itemConfig: ItemType) {
-  const res = adapterItemConfig(itemConfig, [itemConfig]);
+const FormItem: React.FC<ItemType> = (props) => {
+  const [selectOp] = useSelectOprate();
+  const res = adapterItemConfig({ ...props }, [{ ...props }], selectOp);
   const { key, inputElement, ...restField } = res.current;
   if (Array.isArray(inputElement)) {
     return (
@@ -163,6 +197,37 @@ export function formItem(itemConfig: ItemType) {
       {inputElement}
     </Form.Item>
   );
+};
+
+export function formItem(itemConfig: ItemType) {
+  return <FormItem {...itemConfig} />;
+  // const res = adapterItemConfig(itemConfig, [itemConfig]);
+  // const { key, inputElement, ...restField } = res.current;
+  // if (Array.isArray(inputElement)) {
+  //   return (
+  //     <Space key={key} {...restField}>
+  //       {inputElement.map((sub) => {
+  //         if (sub.type === 'direct-union-callback') {
+  //           return sub.memo;
+  //         } else if (React.isValidElement(sub)) {
+  //           return sub;
+  //         } else {
+  //           const { key, inputElement, ...restField } = sub;
+  //           return (
+  //             <Form.Item {...restField} key={key}>
+  //               {inputElement}
+  //             </Form.Item>
+  //           );
+  //         }
+  //       })}
+  //     </Space>
+  //   );
+  // }
+  // return (
+  //   <Form.Item {...restField} key={key}>
+  //     {inputElement}
+  //   </Form.Item>
+  // );
 }
 
 export function formList(listConfig: ListType) {

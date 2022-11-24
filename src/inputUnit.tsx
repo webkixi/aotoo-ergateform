@@ -107,18 +107,30 @@ function generateInput(inputConfig: InputType) {
 
 const InputUnitElement: React.FC<InputType> = (props) => {
   const form = Form.useFormInstance();
-  let { unionEvnets, selfUnion, ...restField } = props;
+  let { unionEvnets, selfUnion, selectOp, ...restField } = props;
+  const [opts, setOpts] = React.useState<OptionsType[]>(
+    restField.options || []
+  );
+  const util: any = {
+    getForm() {
+      return {
+        ...form,
+        setOptions(id: string, options: OptionsType[]) {
+          selectOp.setOptions(id, options);
+        },
+      };
+    },
+  };
+
+  if (restField.type === 'select') {
+    selectOp.setAction(restField.id, setOpts);
+    restField.options = opts;
+  }
+
   const eventHandle = function (callback: any) {
     return function () {
       const args: any = arguments;
-      callback.apply(this, [
-        ...args,
-        {
-          getForm() {
-            return form;
-          },
-        },
-      ]);
+      callback.apply(this, [...args, util]);
     };
   };
   if (unionEvnets && unionEvnets.length) {

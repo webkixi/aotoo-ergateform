@@ -5,6 +5,7 @@ import InputUnitElement from './inputUnit';
 export function adapterItemConfig(
   current: ItemType,
   data: ItemType[],
+  selectOp: any,
   index?: number[]
 ): any {
   let directUnions: any[] = [];
@@ -13,9 +14,11 @@ export function adapterItemConfig(
   if (current.name && current.type !== 'direct-union-callback') {
     flatFormNames.push(current.name);
     if (index) {
+      const $input = current['$input'] as InputType;
       flatChilds.push({
         name: current.name,
         path: index,
+        type: $input.type,
       });
     }
   }
@@ -31,6 +34,7 @@ export function adapterItemConfig(
           const res = adapterItemConfig(
             subItem,
             data,
+            selectOp,
             index ? [...index, jj] : undefined
           );
           directUnions = directUnions.concat(res.directUnions);
@@ -53,7 +57,11 @@ export function adapterItemConfig(
         let accessUnion = true;
         if (Array.isArray($input)) {
           $input.forEach(() => {
-            const res = adapterItemConfig(current, $input as ItemType[]);
+            const res = adapterItemConfig(
+              current,
+              $input as ItemType[],
+              selectOp
+            );
             return res.current;
           });
           accessUnion = false;
@@ -69,7 +77,9 @@ export function adapterItemConfig(
     if (Array.isArray($input)) {
       inputEle = $input;
     } else {
-      inputEle = <InputUnitElement selfUnion={union} {...$input} />;
+      inputEle = (
+        <InputUnitElement selfUnion={union} {...$input} selectOp={selectOp} />
+      );
     }
     return {
       current: {
@@ -100,11 +110,11 @@ export function adapterItemConfig(
   return { current, directUnions, flatFormNames, flatChilds };
 }
 
-export function adapterConfig(data: ItemType[]) {
+export function adapterConfig(data: ItemType[], selectOp: any) {
   const fields: any[] = [];
   let directUnions: any[] = [];
   let flatFormNames: any[] = []; // 扁平化所有表单的name
-  let flatChilds:any[] = []; // 扁平化子元素及寻址路径
+  let flatChilds: any[] = []; // 扁平化子元素及寻址路径
   data.forEach((item: ItemType, ii: number) => {
     const _key = (item.key || item.name || '') + '_' + ii;
     if (React.isValidElement(item)) {
@@ -112,7 +122,7 @@ export function adapterConfig(data: ItemType[]) {
       fields.push(jsx);
     } else {
       item.key = _key;
-      const result = adapterItemConfig(item, data, [ii]);
+      const result = adapterItemConfig(item, data, selectOp, [ii]);
       directUnions = [...directUnions, ...result.directUnions];
       flatFormNames = [...flatFormNames, ...result.flatFormNames];
       flatChilds = [...flatChilds, ...result.flatChilds];

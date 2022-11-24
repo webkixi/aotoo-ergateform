@@ -5,7 +5,7 @@ export default function (current: ItemType, union: any) {
     callback: any;
   }) {
     const { event, callback } = unionItem;
-    const currentInput = current['$input'] as any;
+    const currentInput = current['$input'] as InputType;
     const oldEvent = currentInput[event];
     currentInput[event] = function () {
       const args: any = arguments;
