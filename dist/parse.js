@@ -39,11 +39,10 @@ export function adapterItemConfig(current, data, selectOp, index) {
     if (current.name && current.type !== 'direct-union-callback') {
         flatFormNames.push(current.name);
         if (index) {
-            var $input = current['$input'];
             flatChilds.push({
                 name: current.name,
                 path: index,
-                type: $input.type,
+                type: current.type,
             });
         }
     }

@@ -14,11 +14,10 @@ export function adapterItemConfig(
   if (current.name && current.type !== 'direct-union-callback') {
     flatFormNames.push(current.name);
     if (index) {
-      const $input = current['$input'] as InputType;
       flatChilds.push({
         name: current.name,
         path: index,
-        type: $input.type,
+        type: current.type,
       });
     }
   }
