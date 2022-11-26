@@ -29,11 +29,11 @@ function generateInput(inputConfig: InputType) {
     return inputConfig;
   }
 
-  let { type, ...restField } = inputConfig;
+  let { type, buttonType, ...restField } = inputConfig;
   type = type && type.toLowerCase();
   switch (type) {
     case 'button':
-      return <Button {...restField} />;
+      return <Button {...restField} type={buttonType} />;
       break;
     case 'text':
       return <Input {...restField} />;

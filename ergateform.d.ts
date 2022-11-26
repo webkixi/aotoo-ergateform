@@ -1,5 +1,5 @@
 interface InputType {
-  type: string;
+  type?: string;
   unionEvnets?: string[];
   selfUnion?: any;
   $input?: any;

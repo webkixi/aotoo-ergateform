@@ -41,11 +41,11 @@ function generateInput(inputConfig) {
     if (React.isValidElement(inputConfig)) {
         return inputConfig;
     }
-    var type = inputConfig.type, restField = __rest(inputConfig, ["type"]);
+    var type = inputConfig.type, buttonType = inputConfig.buttonType, restField = __rest(inputConfig, ["type", "buttonType"]);
     type = type && type.toLowerCase();
     switch (type) {
         case 'button':
-            return React.createElement(Button, __assign({}, restField));
+            return React.createElement(Button, __assign({}, restField, { type: buttonType }));
             break;
         case 'text':
             return React.createElement(Input, __assign({}, restField));
