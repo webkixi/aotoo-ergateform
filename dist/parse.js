@@ -121,7 +121,7 @@ export function adapterConfig(data, selectOp) {
     var flatFormNames = []; // 扁平化所有表单的name
     var flatChilds = []; // 扁平化子元素及寻址路径
     data.forEach(function (item, ii) {
-        var _key = (item.key || item.name || '') + '_' + ii;
+        var _key = item.key || (item.name || '') + '_' + ii;
         if (React.isValidElement(item)) {
             var jsx = React.cloneElement(item, { key: _key });
             fields.push(jsx);
