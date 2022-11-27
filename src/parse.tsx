@@ -1,6 +1,6 @@
 import * as React from 'react';
 import attrUnion from './attrUnion';
-import InputUnitElement from './inputUnit';
+import InputUnitElement from './inputElement';
 
 export function adapterItemConfig(
   current: ItemType,

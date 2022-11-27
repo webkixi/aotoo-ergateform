@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Form, Space } from 'antd';
 import { adapterItemConfig, adapterConfig } from './parse';
+import { WrapInputElement } from './wrapElement';
 import 'antd/dist/reset.css';
 
 function useSelectOprate() {
@@ -13,7 +14,9 @@ function useSelectOprate() {
   }
 
   function setOptions(id: string, option: OptionsType[]) {
-    const target: SelectActionType[] = data.current.filter((item: OptionsType) => item.id === id);
+    const target: SelectActionType[] = data.current.filter(
+      (item: OptionsType) => item.id === id
+    );
     if (target.length) {
       const action = target[0].action;
       action(option);
@@ -27,25 +30,21 @@ function useSelectOprate() {
     },
   ];
 }
+
 /**
- * union: {
- *   target: '',
- *   event: '',
- *   callback(targetValue, form){
- *
- *   }
- * }
+ * ErgateForm
+ * antd 表单配置化，模块化的封装
+ * https://www.github.com/webkixi/aotoo-ergateform
  */
 function ErgateForm(formConfig: FormType) {
   const [_form] = Form.useForm();
   const [selectOp] = useSelectOprate();
   const { data, ...restField } = formConfig;
   const formProperty = restField;
-  let form = _form;
+  const form: any = formProperty.form || _form;
+  form.selectOp = selectOp;
   if (!formProperty.form) {
     formProperty.form = form;
-  } else {
-    form = formProperty.form;
   }
   const [__id__] = React.useState('bind custom callback');
   const formContext = {
@@ -59,10 +58,7 @@ function ErgateForm(formConfig: FormType) {
     },
   };
 
-  let { fields, directUnions, flatFormNames, flatChilds } = adapterConfig(
-    data,
-    selectOp
-  );
+  let { fields, directUnions, flatFormNames } = adapterConfig(data, selectOp);
   const formWatcher: { [propName: string]: any } = {};
 
   for (let ii = 0; ii < directUnions.length; ii++) {
@@ -116,46 +112,20 @@ function ErgateForm(formConfig: FormType) {
 
   return (
     <Form {...formProperty}>
-      {fields.map((field) => {
-        if (field.type === 'direct-union-callback') {
-          return field.memo;
-        } else if (React.isValidElement(field)) {
-          return field;
-        } else {
-          const { key, inputElement, ...restField } = field;
-          if (Array.isArray(inputElement)) {
-            return (
-              <Space key={key} {...restField}>
-                {inputElement.map((sub) => {
-                  if (sub.type === 'direct-union-callback') {
-                    return sub.memo;
-                  } else if (React.isValidElement(sub)) {
-                    return sub;
-                  } else {
-                    const { key, inputElement, ...restField } = sub;
-                    return (
-                      <Form.Item {...restField} key={key}>
-                        {inputElement}
-                      </Form.Item>
-                    );
-                  }
-                })}
-              </Space>
-            );
-          } else {
-            return (
-              <Form.Item {...restField} key={key}>
-                {inputElement}
-              </Form.Item>
-            );
-          }
-        }
-      })}
+      {fields.map((field) =>
+        field.type == 'direct-union-callback' ? (
+          field.memo
+        ) : React.isValidElement(field) ? (
+          field
+        ) : (
+          <WrapInputElement {...field} />
+        )
+      )}
     </Form>
   );
 }
 
-// 为了方便
+// 为了方便，不用单独引用antd
 export { Form } from 'antd';
 
 export function union(name: string, callback: any) {
@@ -169,65 +139,14 @@ export function union(name: string, callback: any) {
 }
 
 const FormItem: React.FC<ItemType> = (props) => {
-  const [selectOp] = useSelectOprate();
+  const form: any = Form.useFormInstance();
+  const selectOp = form.selectOp;
   const res = adapterItemConfig({ ...props }, [{ ...props }], selectOp);
-  const { key, inputElement, ...restField } = res.current;
-  if (Array.isArray(inputElement)) {
-    return (
-      <Space key={key} {...restField}>
-        {inputElement.map((sub) => {
-          if (sub.type === 'direct-union-callback') {
-            return sub.memo;
-          } else if (React.isValidElement(sub)) {
-            return sub;
-          } else {
-            const { key, inputElement, ...restField } = sub;
-            return (
-              <Form.Item {...restField} key={key}>
-                {inputElement}
-              </Form.Item>
-            );
-          }
-        })}
-      </Space>
-    );
-  }
-  return (
-    <Form.Item {...restField} key={key}>
-      {inputElement}
-    </Form.Item>
-  );
+  return <WrapInputElement {...res.current} />;
 };
 
 export function formItem(itemConfig: ItemType) {
   return <FormItem {...itemConfig} />;
-  // const res = adapterItemConfig(itemConfig, [itemConfig]);
-  // const { key, inputElement, ...restField } = res.current;
-  // if (Array.isArray(inputElement)) {
-  //   return (
-  //     <Space key={key} {...restField}>
-  //       {inputElement.map((sub) => {
-  //         if (sub.type === 'direct-union-callback') {
-  //           return sub.memo;
-  //         } else if (React.isValidElement(sub)) {
-  //           return sub;
-  //         } else {
-  //           const { key, inputElement, ...restField } = sub;
-  //           return (
-  //             <Form.Item {...restField} key={key}>
-  //               {inputElement}
-  //             </Form.Item>
-  //           );
-  //         }
-  //       })}
-  //     </Space>
-  //   );
-  // }
-  // return (
-  //   <Form.Item {...restField} key={key}>
-  //     {inputElement}
-  //   </Form.Item>
-  // );
 }
 
 export function formList(listConfig: ListType) {

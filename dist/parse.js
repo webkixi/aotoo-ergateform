@@ -31,7 +31,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 };
 import * as React from 'react';
 import attrUnion from './attrUnion';
-import InputUnitElement from './inputUnit';
+import InputUnitElement from './inputElement';
 export function adapterItemConfig(current, data, selectOp, index) {
     var directUnions = [];
     var flatFormNames = [];

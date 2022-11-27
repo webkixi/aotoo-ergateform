@@ -30,8 +30,9 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 import * as React from 'react';
-import { Form, Space } from 'antd';
+import { Form } from 'antd';
 import { adapterItemConfig, adapterConfig } from './parse';
+import { WrapInputElement } from './wrapElement';
 import 'antd/dist/reset.css';
 function useSelectOprate() {
     var data = React.useRef([]);
@@ -56,25 +57,19 @@ function useSelectOprate() {
     ];
 }
 /**
- * union: {
- *   target: '',
- *   event: '',
- *   callback(targetValue, form){
- *
- *   }
- * }
+ * ErgateForm
+ * antd 表单配置化，模块化的封装
+ * https://www.github.com/webkixi/aotoo-ergateform
  */
 function ErgateForm(formConfig) {
     var _form = Form.useForm()[0];
     var selectOp = useSelectOprate()[0];
     var data = formConfig.data, restField = __rest(formConfig, ["data"]);
     var formProperty = restField;
-    var form = _form;
+    var form = formProperty.form || _form;
+    form.selectOp = selectOp;
     if (!formProperty.form) {
         formProperty.form = form;
-    }
-    else {
-        form = formProperty.form;
     }
     var __id__ = React.useState('bind custom callback')[0];
     var formContext = {
@@ -84,7 +79,7 @@ function ErgateForm(formConfig) {
                 } });
         },
     };
-    var _a = adapterConfig(data, selectOp), fields = _a.fields, directUnions = _a.directUnions, flatFormNames = _a.flatFormNames, flatChilds = _a.flatChilds;
+    var _a = adapterConfig(data, selectOp), fields = _a.fields, directUnions = _a.directUnions, flatFormNames = _a.flatFormNames;
     var formWatcher = {};
     for (var ii = 0; ii < directUnions.length; ii++) {
         var _b = directUnions[ii], eventName = _b[0], name_1 = _b[1];
@@ -133,35 +128,10 @@ function ErgateForm(formConfig) {
     }
     fields = renderMemos(fields);
     return (React.createElement(Form, __assign({}, formProperty), fields.map(function (field) {
-        if (field.type === 'direct-union-callback') {
-            return field.memo;
-        }
-        else if (React.isValidElement(field)) {
-            return field;
-        }
-        else {
-            var key = field.key, inputElement = field.inputElement, restField_1 = __rest(field, ["key", "inputElement"]);
-            if (Array.isArray(inputElement)) {
-                return (React.createElement(Space, __assign({ key: key }, restField_1), inputElement.map(function (sub) {
-                    if (sub.type === 'direct-union-callback') {
-                        return sub.memo;
-                    }
-                    else if (React.isValidElement(sub)) {
-                        return sub;
-                    }
-                    else {
-                        var key_1 = sub.key, inputElement_1 = sub.inputElement, restField_2 = __rest(sub, ["key", "inputElement"]);
-                        return (React.createElement(Form.Item, __assign({}, restField_2, { key: key_1 }), inputElement_1));
-                    }
-                })));
-            }
-            else {
-                return (React.createElement(Form.Item, __assign({}, restField_1, { key: key }), inputElement));
-            }
-        }
+        return field.type == 'direct-union-callback' ? (field.memo) : React.isValidElement(field) ? (field) : (React.createElement(WrapInputElement, __assign({}, field)));
     })));
 }
-// 为了方便
+// 为了方便，不用单独引用antd
 export { Form } from 'antd';
 export function union(name, callback) {
     var evt = '';
@@ -173,54 +143,13 @@ export function union(name, callback) {
     };
 }
 var FormItem = function (props) {
-    var selectOp = useSelectOprate()[0];
+    var form = Form.useFormInstance();
+    var selectOp = form.selectOp;
     var res = adapterItemConfig(__assign({}, props), [__assign({}, props)], selectOp);
-    var _a = res.current, key = _a.key, inputElement = _a.inputElement, restField = __rest(_a, ["key", "inputElement"]);
-    if (Array.isArray(inputElement)) {
-        return (React.createElement(Space, __assign({ key: key }, restField), inputElement.map(function (sub) {
-            if (sub.type === 'direct-union-callback') {
-                return sub.memo;
-            }
-            else if (React.isValidElement(sub)) {
-                return sub;
-            }
-            else {
-                var key_2 = sub.key, inputElement_2 = sub.inputElement, restField_3 = __rest(sub, ["key", "inputElement"]);
-                return (React.createElement(Form.Item, __assign({}, restField_3, { key: key_2 }), inputElement_2));
-            }
-        })));
-    }
-    return (React.createElement(Form.Item, __assign({}, restField, { key: key }), inputElement));
+    return React.createElement(WrapInputElement, __assign({}, res.current));
 };
 export function formItem(itemConfig) {
     return React.createElement(FormItem, __assign({}, itemConfig));
-    // const res = adapterItemConfig(itemConfig, [itemConfig]);
-    // const { key, inputElement, ...restField } = res.current;
-    // if (Array.isArray(inputElement)) {
-    //   return (
-    //     <Space key={key} {...restField}>
-    //       {inputElement.map((sub) => {
-    //         if (sub.type === 'direct-union-callback') {
-    //           return sub.memo;
-    //         } else if (React.isValidElement(sub)) {
-    //           return sub;
-    //         } else {
-    //           const { key, inputElement, ...restField } = sub;
-    //           return (
-    //             <Form.Item {...restField} key={key}>
-    //               {inputElement}
-    //             </Form.Item>
-    //           );
-    //         }
-    //       })}
-    //     </Space>
-    //   );
-    // }
-    // return (
-    //   <Form.Item {...restField} key={key}>
-    //     {inputElement}
-    //   </Form.Item>
-    // );
 }
 export function formList(listConfig) {
     var formListConfig = __assign({}, listConfig);

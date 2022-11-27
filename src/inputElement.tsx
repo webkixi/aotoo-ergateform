@@ -105,12 +105,26 @@ function generateInput(inputConfig: InputType) {
   }
 }
 
+const eventsString = ['blur', 'focus'];
+function isEventProperty(attribut: string) {
+  const res = attribut.indexOf('on') === 0 ? true : false;
+  return res ? res : eventsString.includes(attribut);
+}
+
 const InputUnitElement: React.FC<InputType> = (props) => {
   const form = Form.useFormInstance();
+  const eventAttributs: string[] = [];
   let { unionEvnets, selfUnion, selectOp, ...restField } = props;
   const [opts, setOpts] = React.useState<OptionsType[]>(
     restField.options || []
   );
+
+  Object.keys(restField).forEach((ky: string) => {
+    if (isEventProperty(ky)) {
+      eventAttributs.push(ky);
+    }
+  });
+
   const util: any = {
     getForm() {
       return {
@@ -133,11 +147,23 @@ const InputUnitElement: React.FC<InputType> = (props) => {
       callback.apply(this, [...args, util]);
     };
   };
-  if (unionEvnets && unionEvnets.length) {
-    unionEvnets.forEach((evt: string) => {
+
+  eventAttributs.forEach((evt: string) => {
+    if (unionEvnets?.includes(evt)) {
       restField[evt] = eventHandle(restField[evt]);
-    });
-  }
+    } else {
+      const oldCallback = restField[evt];
+      restField[evt] = function () {
+        const args: any = arguments;
+        const context = {
+          ...this,
+          ...util,
+        };
+        oldCallback.apply(context, [...args]);
+      };
+    }
+  });
+
   return generateInput(restField);
 };
 
