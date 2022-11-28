@@ -72,14 +72,10 @@ const WrapMultipleItem: React.FC<InputType> = (props) => {
 }
 
 export const WrapInputElement: React.FC<any> = (props) => {
-  const { key, inputElement, ...restField } = props;
+  const { inputElement, ...restField } = props;
   if (Array.isArray(inputElement)) {
     return <WrapMultipleItem {...restField} inputElement={inputElement} />;
   } else {
-    return (
-      <Form.Item {...restField} key={key}>
-        {inputElement}
-      </Form.Item>
-    );
+    return <Form.Item {...restField}>{inputElement}</Form.Item>;
   }
-}
+};

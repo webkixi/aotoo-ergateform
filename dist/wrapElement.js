@@ -71,12 +71,12 @@ var WrapMultipleItem = function (props) {
     }
 };
 export var WrapInputElement = function (props) {
-    var key = props.key, inputElement = props.inputElement, restField = __rest(props, ["key", "inputElement"]);
+    var inputElement = props.inputElement, restField = __rest(props, ["inputElement"]);
     if (Array.isArray(inputElement)) {
         return React.createElement(WrapMultipleItem, __assign({}, restField, { inputElement: inputElement }));
     }
     else {
-        return (React.createElement(Form.Item, __assign({}, restField, { key: key }), inputElement));
+        return React.createElement(Form.Item, __assign({}, restField), inputElement);
     }
 };
 //# sourceMappingURL=wrapElement.js.map
