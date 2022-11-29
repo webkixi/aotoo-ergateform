@@ -20,7 +20,7 @@ interface ListType {
 }
 
 interface FormType {
-  data: ItemType[];
+  data: ItemType[] | ((state, setState) => ItemType[]);
   [propName: string]: any;
 }
 

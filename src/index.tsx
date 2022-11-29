@@ -39,14 +39,19 @@ function useSelectOprate() {
 function ErgateForm(formConfig: FormType) {
   const [_form] = Form.useForm();
   const [selectOp] = useSelectOprate();
-  const { data, ...restField } = formConfig;
+  const { data, state, ...restField } = formConfig;
   const formProperty = restField;
   const form: any = formProperty.form || _form;
-  form.selectOp = selectOp;
+  const [__id__] = React.useState('bind custom callback');
+  const [status, setStatus] = React.useState(state || {});
+  const setMystate = (params: {}) => {
+    const newState = { ...status, ...params };
+    setStatus(newState);
+  };
+  form.operate = { selectOp };
   if (!formProperty.form) {
     formProperty.form = form;
   }
-  const [__id__] = React.useState('bind custom callback');
   const formContext = {
     getForm() {
       return {
@@ -58,7 +63,12 @@ function ErgateForm(formConfig: FormType) {
     },
   };
 
-  let { fields, directUnions, flatFormNames } = adapterConfig(data, selectOp);
+  const realyData =
+    typeof data === 'function' ? data(status, setMystate) : data;
+  let { fields, directUnions, flatFormNames } = adapterConfig(
+    realyData,
+    form.operate
+  );
   const formWatcher: { [propName: string]: any } = {};
 
   for (let ii = 0; ii < directUnions.length; ii++) {
@@ -140,8 +150,7 @@ export function union(name: string, callback: any) {
 
 const FormItem: React.FC<ItemType> = (props) => {
   const form: any = Form.useFormInstance();
-  const selectOp = form.selectOp;
-  const res = adapterItemConfig({ ...props }, [{ ...props }], selectOp);
+  const res = adapterItemConfig({ ...props }, [{ ...props }], form.operate);
   return <WrapInputElement {...res.current} />;
 };
 

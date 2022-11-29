@@ -100,6 +100,10 @@ function generateInput(inputConfig: InputType) {
       return <Radio {...restField} />;
       break;
 
+    case 'radiogroup':
+      return <Radio.Group {...restField} />;
+      break;
+
     default:
       return null;
   }
@@ -114,7 +118,7 @@ function isEventProperty(attribut: string) {
 const InputUnitElement: React.FC<InputType> = (props) => {
   const form = Form.useFormInstance();
   const eventAttributs: string[] = [];
-  let { unionEvnets, selfUnion, selectOp, ...restField } = props;
+  let { unionEvnets, selfUnion, operate, ...restField } = props;
   const [opts, setOpts] = React.useState<OptionsType[]>(
     restField.options || []
   );
@@ -130,14 +134,14 @@ const InputUnitElement: React.FC<InputType> = (props) => {
       return {
         ...form,
         setOptions(id: string, options: OptionsType[]) {
-          selectOp.setOptions(id, options);
+          operate.selectOp.setOptions(id, options);
         },
       };
     },
   };
 
-  if (restField.type === 'select') {
-    selectOp.setAction(restField.id, setOpts);
+  if (restField.type === 'select' || restField.type === 'cascader') {
+    operate.selectOp.setAction(restField.id, setOpts);
     restField.options = opts;
   }
 

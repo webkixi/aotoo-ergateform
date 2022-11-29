@@ -39,7 +39,7 @@ const WrapFormItem: React.FC<any> = (props) => {
     }
   }
   return <Form.Item {...restField}>{props.children}</Form.Item>;
-}
+};
 
 const WrapMultipleItem: React.FC<InputType> = (props) => {
   const { type, inputElement, ...restField } = props;
@@ -69,7 +69,7 @@ const WrapMultipleItem: React.FC<InputType> = (props) => {
     }
     return <Space {...restField}>{theChildren}</Space>;
   }
-}
+};
 
 export const WrapInputElement: React.FC<any> = (props) => {
   const { inputElement, ...restField } = props;

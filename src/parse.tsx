@@ -5,7 +5,7 @@ import InputUnitElement from './inputElement';
 export function adapterItemConfig(
   current: ItemType,
   data: ItemType[],
-  selectOp: any,
+  operate: any,
   index?: number[]
 ): any {
   let directUnions: any[] = [];
@@ -33,7 +33,7 @@ export function adapterItemConfig(
           const res = adapterItemConfig(
             subItem,
             data,
-            selectOp,
+            operate,
             index ? [...index, jj] : undefined
           );
           directUnions = directUnions.concat(res.directUnions);
@@ -59,7 +59,7 @@ export function adapterItemConfig(
             const res = adapterItemConfig(
               current,
               $input as ItemType[],
-              selectOp
+              operate
             );
             return res.current;
           });
@@ -77,7 +77,7 @@ export function adapterItemConfig(
       inputEle = $input;
     } else {
       inputEle = (
-        <InputUnitElement selfUnion={union} {...$input} selectOp={selectOp} />
+        <InputUnitElement selfUnion={union} {...$input} operate={operate} />
       );
     }
     return {
@@ -109,7 +109,7 @@ export function adapterItemConfig(
   return { current, directUnions, flatFormNames, flatChilds };
 }
 
-export function adapterConfig(data: ItemType[], selectOp: any) {
+export function adapterConfig(data: ItemType[], operate: any) {
   const fields: any[] = [];
   let directUnions: any[] = [];
   let flatFormNames: any[] = []; // 扁平化所有表单的name
@@ -121,7 +121,7 @@ export function adapterConfig(data: ItemType[], selectOp: any) {
       fields.push(jsx);
     } else {
       item.key = _key;
-      const result = adapterItemConfig(item, data, selectOp, [ii]);
+      const result = adapterItemConfig(item, data, operate, [ii]);
       directUnions = [...directUnions, ...result.directUnions];
       flatFormNames = [...flatFormNames, ...result.flatFormNames];
       flatChilds = [...flatChilds, ...result.flatChilds];

@@ -64,14 +64,19 @@ function useSelectOprate() {
 function ErgateForm(formConfig) {
     var _form = Form.useForm()[0];
     var selectOp = useSelectOprate()[0];
-    var data = formConfig.data, restField = __rest(formConfig, ["data"]);
+    var data = formConfig.data, state = formConfig.state, restField = __rest(formConfig, ["data", "state"]);
     var formProperty = restField;
     var form = formProperty.form || _form;
-    form.selectOp = selectOp;
+    var __id__ = React.useState('bind custom callback')[0];
+    var _a = React.useState(state || {}), status = _a[0], setStatus = _a[1];
+    var setMystate = function (params) {
+        var newState = __assign(__assign({}, status), params);
+        setStatus(newState);
+    };
+    form.operate = { selectOp: selectOp };
     if (!formProperty.form) {
         formProperty.form = form;
     }
-    var __id__ = React.useState('bind custom callback')[0];
     var formContext = {
         getForm: function () {
             return __assign(__assign({}, form), { setOptions: function (id, options) {
@@ -79,10 +84,11 @@ function ErgateForm(formConfig) {
                 } });
         },
     };
-    var _a = adapterConfig(data, selectOp), fields = _a.fields, directUnions = _a.directUnions, flatFormNames = _a.flatFormNames;
+    var realyData = typeof data === 'function' ? data(status, setMystate) : data;
+    var _b = adapterConfig(realyData, form.operate), fields = _b.fields, directUnions = _b.directUnions, flatFormNames = _b.flatFormNames;
     var formWatcher = {};
     for (var ii = 0; ii < directUnions.length; ii++) {
-        var _b = directUnions[ii], eventName = _b[0], name_1 = _b[1];
+        var _c = directUnions[ii], eventName = _c[0], name_1 = _c[1];
         if (flatFormNames.indexOf(name_1) > -1) {
             formWatcher[name_1] = Form.useWatch(name_1, form);
         }
@@ -144,8 +150,7 @@ export function union(name, callback) {
 }
 var FormItem = function (props) {
     var form = Form.useFormInstance();
-    var selectOp = form.selectOp;
-    var res = adapterItemConfig(__assign({}, props), [__assign({}, props)], selectOp);
+    var res = adapterItemConfig(__assign({}, props), [__assign({}, props)], form.operate);
     return React.createElement(WrapInputElement, __assign({}, res.current));
 };
 export function formItem(itemConfig) {

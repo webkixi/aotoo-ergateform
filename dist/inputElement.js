@@ -105,6 +105,9 @@ function generateInput(inputConfig) {
         case 'radio':
             return React.createElement(Radio, __assign({}, restField));
             break;
+        case 'radiogroup':
+            return React.createElement(Radio.Group, __assign({}, restField));
+            break;
         default:
             return null;
     }
@@ -117,7 +120,7 @@ function isEventProperty(attribut) {
 var InputUnitElement = function (props) {
     var form = Form.useFormInstance();
     var eventAttributs = [];
-    var unionEvnets = props.unionEvnets, selfUnion = props.selfUnion, selectOp = props.selectOp, restField = __rest(props, ["unionEvnets", "selfUnion", "selectOp"]);
+    var unionEvnets = props.unionEvnets, selfUnion = props.selfUnion, operate = props.operate, restField = __rest(props, ["unionEvnets", "selfUnion", "operate"]);
     var _a = React.useState(restField.options || []), opts = _a[0], setOpts = _a[1];
     Object.keys(restField).forEach(function (ky) {
         if (isEventProperty(ky)) {
@@ -127,12 +130,12 @@ var InputUnitElement = function (props) {
     var util = {
         getForm: function () {
             return __assign(__assign({}, form), { setOptions: function (id, options) {
-                    selectOp.setOptions(id, options);
+                    operate.selectOp.setOptions(id, options);
                 } });
         },
     };
-    if (restField.type === 'select') {
-        selectOp.setAction(restField.id, setOpts);
+    if (restField.type === 'select' || restField.type === 'cascader') {
+        operate.selectOp.setAction(restField.id, setOpts);
         restField.options = opts;
     }
     var eventHandle = function (callback) {
