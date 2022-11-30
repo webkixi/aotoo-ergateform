@@ -30,7 +30,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 import * as React from 'react';
-import attrUnion from './attrUnion';
+import unionEvent from './unionEvent';
 import InputUnitElement from './inputElement';
 export function adapterItemConfig(current, data, operate, index) {
     var directUnions = [];
@@ -81,8 +81,8 @@ export function adapterItemConfig(current, data, operate, index) {
                     });
                     accessUnion = false;
                 }
-                if (accessUnion && item.union && item.union.target === current.name) {
-                    current = attrUnion(current, item.union);
+                if (accessUnion) {
+                    current = unionEvent(current, item.union);
                 }
             });
         }

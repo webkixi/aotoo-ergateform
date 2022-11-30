@@ -1,9 +1,9 @@
 import * as React from 'react';
-import attrUnion from './attrUnion';
+import unionEvent from './unionEvent';
 import InputUnitElement from './inputElement';
 
 export function adapterItemConfig(
-  current: ItemType|InputType,
+  current: ItemType | InputType,
   data: ItemType[],
   operate: any,
   index?: number[]
@@ -60,8 +60,8 @@ export function adapterItemConfig(
           });
           accessUnion = false;
         }
-        if (accessUnion && item.union && item.union.target === current.name) {
-          current = attrUnion(current, item.union);
+        if (accessUnion) {
+          current = unionEvent(current, item.union);
         }
       });
     }

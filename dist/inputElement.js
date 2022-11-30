@@ -145,17 +145,7 @@ var InputUnitElement = function (props) {
         };
     };
     eventAttributs.forEach(function (evt) {
-        if (unionEvnets === null || unionEvnets === void 0 ? void 0 : unionEvnets.includes(evt)) {
-            restField[evt] = eventHandle(restField[evt]);
-        }
-        else {
-            var oldCallback_1 = restField[evt];
-            restField[evt] = function () {
-                var args = arguments;
-                var context = __assign(__assign({}, this), util);
-                oldCallback_1.apply(context, __spreadArray([], args, true));
-            };
-        }
+        restField[evt] = eventHandle(restField[evt]);
     });
     return generateInput(restField);
 };

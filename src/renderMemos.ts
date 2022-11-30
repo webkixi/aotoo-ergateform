@@ -1,10 +1,7 @@
 import * as React from 'react';
 
-export default function renderMemos(
-  allfields: any[],
-  params: any
-) {
-  const { flatFormNames, formWatcher, formContext, status } = params
+export default function renderMemos(allfields: any[], params: any) {
+  const { flatFormNames, formWatcher, formContext, status } = params;
   return allfields.map((field, ii) => {
     if (field.type === 'direct-union-callback') {
       const { name, directUnionCallback, event } = field;

@@ -153,19 +153,7 @@ const InputUnitElement: React.FC<InputType> = (props) => {
   };
 
   eventAttributs.forEach((evt: string) => {
-    if (unionEvnets?.includes(evt)) {
-      restField[evt] = eventHandle(restField[evt]);
-    } else {
-      const oldCallback = restField[evt];
-      restField[evt] = function () {
-        const args: any = arguments;
-        const context = {
-          ...this,
-          ...util,
-        };
-        oldCallback.apply(context, [...args]);
-      };
-    }
+    restField[evt] = eventHandle(restField[evt]);
   });
 
   return generateInput(restField);
