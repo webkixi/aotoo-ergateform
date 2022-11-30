@@ -5,7 +5,7 @@ function isEventProperty(attribut: string) {
 }
 
 function inputUnion(
-  current: ItemType,
+  current: any,
   unionItem: {
     target: string;
     event: string;
@@ -14,10 +14,15 @@ function inputUnion(
 ) {
   const { target, event, callback } = unionItem;
   const currentInput = current['$input'] as InputType;
-  if (target === current.name) {
+  if (target && target === current.name) {
     if (!currentInput[event]) {
       const tempAry = currentInput['unionEvnets'] || [];
-      currentInput[event] = callback;
+      currentInput[event] = function () {
+        const args: any = arguments;
+        if (args[0] !== undefined) {
+          callback.apply(this, [...args]);
+        }
+      };
       if (tempAry.indexOf(event) === -1) {
         tempAry.push(event);
       }
@@ -38,9 +43,6 @@ function inputUnion(
         };
         if (typeof oldEvent === 'function') {
           oldEvent.apply(context, [...args]);
-        }
-        if (typeof callback === 'function') {
-          callback.apply(context, [...args]);
         }
       };
     }

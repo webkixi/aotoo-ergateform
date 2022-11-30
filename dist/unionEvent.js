@@ -26,10 +26,15 @@ function isEventProperty(attribut) {
 function inputUnion(current, unionItem) {
     var target = unionItem.target, event = unionItem.event, callback = unionItem.callback;
     var currentInput = current['$input'];
-    if (target === current.name) {
+    if (target && target === current.name) {
         if (!currentInput[event]) {
             var tempAry = currentInput['unionEvnets'] || [];
-            currentInput[event] = callback;
+            currentInput[event] = function () {
+                var args = arguments;
+                if (args[0] !== undefined) {
+                    callback.apply(this, __spreadArray([], args, true));
+                }
+            };
             if (tempAry.indexOf(event) === -1) {
                 tempAry.push(event);
             }
@@ -46,9 +51,6 @@ function inputUnion(current, unionItem) {
                 var context = __assign(__assign({}, this), { getForm: util.getForm });
                 if (typeof oldEvent_1 === 'function') {
                     oldEvent_1.apply(context, __spreadArray([], args, true));
-                }
-                if (typeof callback === 'function') {
-                    callback.apply(context, __spreadArray([], args, true));
                 }
             };
         }
