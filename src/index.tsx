@@ -2,34 +2,9 @@ import * as React from 'react';
 import { Form, Space } from 'antd';
 import { adapterItemConfig, adapterConfig } from './parse';
 import { WrapInputElement } from './wrapElement';
+import renderMemos from './renderMemos';
+import useSelectOprate from './useSelectOprate';
 import 'antd/dist/reset.css';
-
-function useSelectOprate() {
-  const data: any = React.useRef([]);
-  function setAction(id: string, func: any) {
-    const target = data.current.filter((item: OptionsType) => item.id === id);
-    if (!target.length) {
-      data.current = [...data.current, { id, action: func }];
-    }
-  }
-
-  function setOptions(id: string, option: OptionsType[]) {
-    const target: SelectActionType[] = data.current.filter(
-      (item: OptionsType) => item.id === id
-    );
-    if (target.length) {
-      const action = target[0].action;
-      action(option);
-    }
-  }
-
-  return [
-    {
-      setAction,
-      setOptions,
-    },
-  ];
-}
 
 /**
  * ErgateForm
@@ -42,16 +17,21 @@ function ErgateForm(formConfig: FormType) {
   const { data, state, ...restField } = formConfig;
   const formProperty = restField;
   const form: any = formProperty.form || _form;
-  const [__id__] = React.useState('bind custom callback');
   const [status, setStatus] = React.useState(state || {});
+
   const setMystate = (params: {}) => {
     const newState = { ...status, ...params };
     setStatus(newState);
   };
+
+  const realyData =
+    typeof data === 'function' ? data(status, setMystate) : data;
+
   form.operate = { selectOp };
   if (!formProperty.form) {
     formProperty.form = form;
   }
+
   const formContext = {
     getForm() {
       return {
@@ -63,14 +43,12 @@ function ErgateForm(formConfig: FormType) {
     },
   };
 
-  const realyData =
-    typeof data === 'function' ? data(status, setMystate) : data;
-  let { fields, directUnions, flatFormNames } = adapterConfig(
+  const { fields, directUnions, flatFormNames, flatChilds } = adapterConfig(
     realyData,
     form.operate
   );
-  const formWatcher: { [propName: string]: any } = {};
 
+  const formWatcher: { [propName: string]: any } = {};
   for (let ii = 0; ii < directUnions.length; ii++) {
     const [eventName, name] = directUnions[ii];
     if (flatFormNames.indexOf(name) > -1) {
@@ -78,51 +56,16 @@ function ErgateForm(formConfig: FormType) {
     }
   }
 
-  function renderMemos(allfields: any[]) {
-    return allfields.map((field, ii) => {
-      if (field.type === 'direct-union-callback') {
-        const { name, directUnionCallback } = field;
-        if (flatFormNames.indexOf(field.name) > -1) {
-          const theMemo = React.useMemo(() => {
-            let jsx =
-              directUnionCallback.call(formContext, formWatcher[name]) || null;
-            if (jsx && !jsx.key) {
-              jsx = React.cloneElement(jsx, { key: 'callback_' + ii });
-            }
-            return jsx;
-          }, [formWatcher[field.name]]);
-          return {
-            type: 'direct-union-callback',
-            memo: theMemo,
-          };
-        } else {
-          const stockMemo = React.useMemo(() => {
-            let jsx =
-              directUnionCallback.call(formContext, formWatcher[name]) || null;
-            if (jsx && !jsx.key) {
-              jsx = React.cloneElement(jsx, { key: 'callback_' + ii });
-            }
-            return jsx;
-          }, [__id__]);
-          return {
-            type: 'direct-union-callback',
-            memo: stockMemo,
-          };
-        }
-      } else {
-        if (Array.isArray(field.inputElement)) {
-          field.inputElement = renderMemos(field.inputElement);
-        }
-      }
-      return field;
-    });
-  }
-
-  fields = renderMemos(fields);
+  const fieldsData = renderMemos(fields, {
+    flatFormNames,
+    formWatcher,
+    formContext,
+    status,
+  });
 
   return (
     <Form {...formProperty}>
-      {fields.map((field) =>
+      {fieldsData.map((field) =>
         field.type == 'direct-union-callback' ? (
           field.memo
         ) : React.isValidElement(field) ? (

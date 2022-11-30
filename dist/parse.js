@@ -42,7 +42,7 @@ export function adapterItemConfig(current, data, operate, index) {
             flatChilds.push({
                 name: current.name,
                 path: index,
-                type: current.type,
+                type: current.$input.type,
             });
         }
     }
@@ -77,8 +77,7 @@ export function adapterItemConfig(current, data, operate, index) {
                 var accessUnion = true;
                 if (Array.isArray($input)) {
                     $input.forEach(function () {
-                        var res = adapterItemConfig(current, $input, operate);
-                        return res.current;
+                        adapterItemConfig(current, $input, operate);
                     });
                     accessUnion = false;
                 }
@@ -110,9 +109,6 @@ export function adapterItemConfig(current, data, operate, index) {
             current.directUnionCallback,
         ]);
     }
-    if (current.name) {
-        flatFormNames.push(current.name);
-    }
     return { current: current, directUnions: directUnions, flatFormNames: flatFormNames, flatChilds: flatChilds };
 }
 export function adapterConfig(data, operate) {
@@ -127,8 +123,8 @@ export function adapterConfig(data, operate) {
             fields.push(jsx);
         }
         else {
-            item.key = _key;
-            var result = adapterItemConfig(item, data, operate, [ii]);
+            var itemData = __assign(__assign({}, item), { key: _key });
+            var result = adapterItemConfig(itemData, data, operate, [ii]);
             directUnions = __spreadArray(__spreadArray([], directUnions, true), result.directUnions, true);
             flatFormNames = __spreadArray(__spreadArray([], flatFormNames, true), result.flatFormNames, true);
             flatChilds = __spreadArray(__spreadArray([], flatChilds, true), result.flatChilds, true);

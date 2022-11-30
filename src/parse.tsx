@@ -3,7 +3,7 @@ import attrUnion from './attrUnion';
 import InputUnitElement from './inputElement';
 
 export function adapterItemConfig(
-  current: ItemType,
+  current: ItemType|InputType,
   data: ItemType[],
   operate: any,
   index?: number[]
@@ -17,7 +17,7 @@ export function adapterItemConfig(
       flatChilds.push({
         name: current.name,
         path: index,
-        type: current.type,
+        type: current.$input.type,
       });
     }
   }
@@ -56,12 +56,7 @@ export function adapterItemConfig(
         let accessUnion = true;
         if (Array.isArray($input)) {
           $input.forEach(() => {
-            const res = adapterItemConfig(
-              current,
-              $input as ItemType[],
-              operate
-            );
-            return res.current;
+            adapterItemConfig(current, $input as ItemType[], operate);
           });
           accessUnion = false;
         }
@@ -102,10 +97,6 @@ export function adapterItemConfig(
     ]);
   }
 
-  if (current.name) {
-    flatFormNames.push(current.name);
-  }
-
   return { current, directUnions, flatFormNames, flatChilds };
 }
 
@@ -120,8 +111,8 @@ export function adapterConfig(data: ItemType[], operate: any) {
       const jsx = React.cloneElement(item, { key: _key });
       fields.push(jsx);
     } else {
-      item.key = _key;
-      const result = adapterItemConfig(item, data, operate, [ii]);
+      const itemData = { ...item, key: _key };
+      const result = adapterItemConfig(itemData, data, operate, [ii]);
       directUnions = [...directUnions, ...result.directUnions];
       flatFormNames = [...flatFormNames, ...result.flatFormNames];
       flatChilds = [...flatChilds, ...result.flatChilds];
