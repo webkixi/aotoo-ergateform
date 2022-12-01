@@ -30,7 +30,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 import * as React from 'react';
-import { Button, Form, Input, Cascader, Select, AutoComplete, InputNumber, Radio, Checkbox, Rate, Slider, Switch, TimePicker, TreeSelect, DatePicker, } from 'antd';
+import { Button, Form, Input, Cascader, Select, AutoComplete, InputNumber, Radio, Checkbox, Rate, Slider, Switch, TimePicker, TreeSelect, DatePicker, Space, } from 'antd';
 var TextArea = Input.TextArea;
 var Search = Input.Search;
 var Group = Input.Group;
@@ -41,7 +41,7 @@ function generateInput(inputConfig) {
     if (React.isValidElement(inputConfig)) {
         return inputConfig;
     }
-    var type = inputConfig.type, buttonType = inputConfig.buttonType, restField = __rest(inputConfig, ["type", "buttonType"]);
+    var type = inputConfig.type, buttonType = inputConfig.buttonType, direction = inputConfig.direction, restField = __rest(inputConfig, ["type", "buttonType", "direction"]);
     type = type && type.toLowerCase();
     switch (type) {
         case 'button':
@@ -100,12 +100,28 @@ function generateInput(inputConfig) {
             return React.createElement(Checkbox, __assign({}, restField));
             break;
         case 'checkboxgroup':
+            if (direction) {
+                var options = restField.options.map(function (item) {
+                    return React.createElement(Checkbox, { value: item.value }, item.label);
+                });
+                return (React.createElement(Checkbox.Group, null,
+                    React.createElement(Space, { direction: direction }, options)));
+            }
             return React.createElement(Checkbox.Group, __assign({}, restField));
             break;
         case 'radio':
             return React.createElement(Radio, __assign({}, restField));
             break;
         case 'radiogroup':
+            if (direction) {
+                var options = restField.options.map(function (item) {
+                    return (React.createElement(Radio, { value: item.value },
+                        item.label,
+                        item.children));
+                });
+                return (React.createElement(Radio.Group, null,
+                    React.createElement(Space, { direction: direction }, options)));
+            }
             return React.createElement(Radio.Group, __assign({}, restField));
             break;
         default:

@@ -29,7 +29,7 @@ function generateInput(inputConfig: InputType) {
     return inputConfig;
   }
 
-  let { type, buttonType, ...restField } = inputConfig;
+  let { type, buttonType, direction, ...restField } = inputConfig;
   type = type && type.toLowerCase();
   switch (type) {
     case 'button':
@@ -93,6 +93,18 @@ function generateInput(inputConfig: InputType) {
       break;
 
     case 'checkboxgroup':
+      if (direction) {
+        const options = restField.options.map(
+          (item: { label: string; value: string | number; children?: any }) => {
+            return <Checkbox value={item.value}>{item.label}</Checkbox>;
+          }
+        );
+        return (
+          <Checkbox.Group>
+            <Space direction={direction}>{options}</Space>
+          </Checkbox.Group>
+        );
+      }
       return <Checkbox.Group {...restField} />;
       break;
 
@@ -101,6 +113,23 @@ function generateInput(inputConfig: InputType) {
       break;
 
     case 'radiogroup':
+      if (direction) {
+        const options = restField.options.map(
+          (item: { label: string; value: string | number; children?: any }) => {
+            return (
+              <Radio value={item.value}>
+                {item.label}
+                {item.children}
+              </Radio>
+            );
+          }
+        );
+        return (
+          <Radio.Group>
+            <Space direction={direction}>{options}</Space>
+          </Radio.Group>
+        );
+      }
       return <Radio.Group {...restField} />;
       break;
 
