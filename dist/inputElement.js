@@ -42,6 +42,7 @@ function generateInput(inputConfig) {
         return inputConfig;
     }
     var type = inputConfig.type, buttonType = inputConfig.buttonType, direction = inputConfig.direction, restField = __rest(inputConfig, ["type", "buttonType", "direction"]);
+    var tempRestField = restField;
     type = type && type.toLowerCase();
     switch (type) {
         case 'button':
@@ -101,11 +102,12 @@ function generateInput(inputConfig) {
             break;
         case 'checkboxgroup':
             if (direction) {
-                var options = restField.options.map(function (item) {
-                    return React.createElement(Checkbox, { value: item.value }, item.label);
+                var options = tempRestField.options, restField_1 = __rest(tempRestField, ["options"]);
+                var opts = options.map(function (item, ii) {
+                    return (React.createElement(Checkbox, { key: "checkboxgroup-".concat(item.value, "-").concat(ii), value: item.value }, item.label));
                 });
-                return (React.createElement(Checkbox.Group, null,
-                    React.createElement(Space, { direction: direction }, options)));
+                return (React.createElement(Checkbox.Group, __assign({}, restField_1),
+                    React.createElement(Space, { direction: direction }, opts)));
             }
             return React.createElement(Checkbox.Group, __assign({}, restField));
             break;
@@ -114,13 +116,14 @@ function generateInput(inputConfig) {
             break;
         case 'radiogroup':
             if (direction) {
-                var options = restField.options.map(function (item) {
-                    return (React.createElement(Radio, { value: item.value },
+                var options = tempRestField.options, restField_2 = __rest(tempRestField, ["options"]);
+                var opts = options.map(function (item, ii) {
+                    return (React.createElement(Radio, { value: item.value, key: "radiogroup-".concat(item.value, "-").concat(ii) },
                         item.label,
                         item.children));
                 });
-                return (React.createElement(Radio.Group, null,
-                    React.createElement(Space, { direction: direction }, options)));
+                return (React.createElement(Radio.Group, __assign({}, restField_2),
+                    React.createElement(Space, { direction: direction }, opts)));
             }
             return React.createElement(Radio.Group, __assign({}, restField));
             break;

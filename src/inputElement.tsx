@@ -30,6 +30,7 @@ function generateInput(inputConfig: InputType) {
   }
 
   let { type, buttonType, direction, ...restField } = inputConfig;
+  const tempRestField = restField;
   type = type && type.toLowerCase();
   switch (type) {
     case 'button':
@@ -94,14 +95,25 @@ function generateInput(inputConfig: InputType) {
 
     case 'checkboxgroup':
       if (direction) {
-        const options = restField.options.map(
-          (item: { label: string; value: string | number; children?: any }) => {
-            return <Checkbox value={item.value}>{item.label}</Checkbox>;
+        const { options, ...restField } = tempRestField;
+        const opts = options.map(
+          (
+            item: { label: string; value: string | number; children?: any },
+            ii: number
+          ) => {
+            return (
+              <Checkbox
+                key={`checkboxgroup-${item.value}-${ii}`}
+                value={item.value}
+              >
+                {item.label}
+              </Checkbox>
+            );
           }
         );
         return (
-          <Checkbox.Group>
-            <Space direction={direction}>{options}</Space>
+          <Checkbox.Group {...restField}>
+            <Space direction={direction}>{opts}</Space>
           </Checkbox.Group>
         );
       }
@@ -114,10 +126,14 @@ function generateInput(inputConfig: InputType) {
 
     case 'radiogroup':
       if (direction) {
-        const options = restField.options.map(
-          (item: { label: string; value: string | number; children?: any }) => {
+        const { options, ...restField } = tempRestField;
+        const opts = options.map(
+          (
+            item: { label: string; value: string | number; children?: any },
+            ii: number
+          ) => {
             return (
-              <Radio value={item.value}>
+              <Radio value={item.value} key={`radiogroup-${item.value}-${ii}`}>
                 {item.label}
                 {item.children}
               </Radio>
@@ -125,8 +141,8 @@ function generateInput(inputConfig: InputType) {
           }
         );
         return (
-          <Radio.Group>
-            <Space direction={direction}>{options}</Space>
+          <Radio.Group {...restField}>
+            <Space direction={direction}>{opts}</Space>
           </Radio.Group>
         );
       }
