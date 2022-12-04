@@ -30,106 +30,70 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 import * as React from 'react';
-import { Button, Form, Input, Cascader, Select, AutoComplete, InputNumber, Radio, Checkbox, Rate, Slider, Switch, TimePicker, TreeSelect, DatePicker, Space, } from 'antd';
+import { Button, Form, Input, Cascader, Select, AutoComplete, InputNumber, Radio, Checkbox, Rate, Slider, Switch, TimePicker, TreeSelect, DatePicker, Transfer, Upload, Space, } from 'antd';
 var TextArea = Input.TextArea;
 var Search = Input.Search;
 var Group = Input.Group;
 var Password = Input.Password;
 var TimeRangePicker = TimePicker.RangePicker;
 var DateRangePicker = DatePicker.RangePicker;
+var compoents = {
+    button: Button,
+    text: Input,
+    textarea: TextArea,
+    search: Search,
+    password: Password,
+    cascader: Cascader,
+    select: Select,
+    autocomplete: AutoComplete,
+    inputnumber: InputNumber,
+    number: InputNumber,
+    rate: Rate,
+    slider: Slider,
+    switch: Switch,
+    timepicker: TimePicker,
+    timerange: TimeRangePicker,
+    datepicker: DatePicker,
+    daterange: DateRangePicker,
+    treeselect: TreeSelect,
+    checkbox: Checkbox,
+    checkboxgroup: Checkbox.Group,
+    radio: Radio,
+    radiogroup: Radio.Group,
+    transfer: Transfer,
+    upload: Upload,
+};
+function inputComponent(Component, type, params) {
+    if (type === 'button') {
+        var buttonType = params.buttonType, restField = __rest(params, ["buttonType"]);
+        return React.createElement(Button, __assign({}, restField, { type: buttonType }));
+    }
+    if (type === 'upload') {
+        var fieldName = params.fieldName, restField = __rest(params, ["fieldName"]);
+        return React.createElement(Upload, __assign({}, restField, { name: fieldName }));
+    }
+    if (type === 'checkboxgroup' || type === 'radiogroup') {
+        var direction = params.direction, options = params.options, restField = __rest(params, ["direction", "options"]);
+        var ChildComponent_1 = type === 'checkboxgroup' ? Checkbox : Radio;
+        if (direction) {
+            var opts = options.map(function (item, ii) {
+                return (React.createElement(ChildComponent_1, { key: "".concat(type, "-").concat(item.value, "-").concat(ii), value: item.value },
+                    item.label,
+                    item.children));
+            });
+            return (React.createElement(Component, __assign({}, restField),
+                React.createElement(Space, { direction: direction }, opts)));
+        }
+        return React.createElement(Component, __assign({}, restField));
+    }
+    return React.createElement(Component, __assign({}, params));
+}
 function generateInput(inputConfig) {
     if (React.isValidElement(inputConfig)) {
         return inputConfig;
     }
-    var type = inputConfig.type, buttonType = inputConfig.buttonType, direction = inputConfig.direction, restField = __rest(inputConfig, ["type", "buttonType", "direction"]);
-    var tempRestField = restField;
-    type = type && type.toLowerCase();
-    switch (type) {
-        case 'button':
-            return React.createElement(Button, __assign({}, restField, { type: buttonType }));
-            break;
-        case 'text':
-            return React.createElement(Input, __assign({}, restField));
-            break;
-        case 'textarea':
-            return React.createElement(TextArea, __assign({}, restField));
-            break;
-        case 'search':
-            return React.createElement(Search, __assign({}, restField));
-            break;
-        case 'password':
-            return React.createElement(Password, __assign({}, restField));
-            break;
-        case 'cascader':
-            return React.createElement(Cascader, __assign({}, restField));
-            break;
-        case 'select':
-            return React.createElement(Select, __assign({}, restField));
-            break;
-        case 'autocomplete':
-            return React.createElement(AutoComplete, __assign({}, restField));
-            break;
-        case 'inputnumber':
-            return React.createElement(InputNumber, __assign({}, restField));
-            break;
-        case 'rate':
-            return React.createElement(Rate, __assign({}, restField));
-            break;
-        case 'slider':
-            return React.createElement(Slider, __assign({}, restField));
-            break;
-        case 'switch':
-            return React.createElement(Switch, __assign({}, restField));
-            break;
-        case 'timepicker':
-            return React.createElement(TimePicker, __assign({}, restField));
-            break;
-        case 'timerange':
-            return React.createElement(TimeRangePicker, __assign({}, restField));
-            break;
-        case 'treeselect':
-            return React.createElement(TreeSelect, __assign({}, restField));
-            break;
-        case 'datepicker':
-            return React.createElement(DatePicker, __assign({}, restField));
-            break;
-        case 'daterange':
-            return React.createElement(DateRangePicker, __assign({}, restField));
-            break;
-        // CheckboxGroup
-        case 'checkbox':
-            return React.createElement(Checkbox, __assign({}, restField));
-            break;
-        case 'checkboxgroup':
-            if (direction) {
-                var options = tempRestField.options, restField_1 = __rest(tempRestField, ["options"]);
-                var opts = options.map(function (item, ii) {
-                    return (React.createElement(Checkbox, { key: "checkboxgroup-".concat(item.value, "-").concat(ii), value: item.value }, item.label));
-                });
-                return (React.createElement(Checkbox.Group, __assign({}, restField_1),
-                    React.createElement(Space, { direction: direction }, opts)));
-            }
-            return React.createElement(Checkbox.Group, __assign({}, restField));
-            break;
-        case 'radio':
-            return React.createElement(Radio, __assign({}, restField));
-            break;
-        case 'radiogroup':
-            if (direction) {
-                var options = tempRestField.options, restField_2 = __rest(tempRestField, ["options"]);
-                var opts = options.map(function (item, ii) {
-                    return (React.createElement(Radio, { value: item.value, key: "radiogroup-".concat(item.value, "-").concat(ii) },
-                        item.label,
-                        item.children));
-                });
-                return (React.createElement(Radio.Group, __assign({}, restField_2),
-                    React.createElement(Space, { direction: direction }, opts)));
-            }
-            return React.createElement(Radio.Group, __assign({}, restField));
-            break;
-        default:
-            return null;
-    }
+    var type = inputConfig.type, restField = __rest(inputConfig, ["type"]);
+    return inputComponent(compoents[type], type, restField);
 }
 var eventsString = ['blur', 'focus'];
 function isEventProperty(attribut) {

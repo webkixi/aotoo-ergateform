@@ -6,11 +6,13 @@ export default function renderMemos(allfields, params) {
             var name_1 = field.name, directUnionCallback_1 = field.directUnionCallback, event_1 = field.event;
             if (flatFormNames.indexOf(field.name) > -1) {
                 var theMemo = React.useMemo(function () {
-                    var jsx = directUnionCallback_1.call(formContext, formWatcher[name_1]) || null;
-                    if (jsx && !jsx.key) {
-                        jsx = React.cloneElement(jsx, { key: 'callback_' + ii });
+                    if (formWatcher[field.name] !== undefined) {
+                        var jsx = directUnionCallback_1.call(formContext, formWatcher[name_1]) || null;
+                        if (jsx && !jsx.key) {
+                            jsx = React.cloneElement(jsx, { key: 'callback_' + ii });
+                        }
+                        return jsx;
                     }
-                    return jsx;
                 }, [formWatcher[field.name]]);
                 return {
                     type: 'direct-union-callback',
@@ -20,11 +22,13 @@ export default function renderMemos(allfields, params) {
             else if (name_1.indexOf('state.') === 0 || status.hasOwnProperty(name_1)) {
                 var _name_1 = name_1.replace(/state\./gi, '');
                 var theMemo = React.useMemo(function () {
-                    var jsx = directUnionCallback_1.call(formContext, status[_name_1]) || null;
-                    if (jsx && !jsx.key) {
-                        jsx = React.cloneElement(jsx, { key: 'callback_' + ii });
+                    if (status[_name_1] !== undefined) {
+                        var jsx = directUnionCallback_1.call(formContext, status[_name_1]) || null;
+                        if (jsx && !jsx.key) {
+                            jsx = React.cloneElement(jsx, { key: 'callback_' + ii });
+                        }
+                        return jsx;
                     }
-                    return jsx;
                 }, [status[_name_1]]);
                 return {
                     type: 'direct-union-callback',

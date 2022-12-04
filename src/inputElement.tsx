@@ -15,6 +15,8 @@ import {
   TimePicker,
   TreeSelect,
   DatePicker,
+  Transfer,
+  Upload,
   Space,
 } from 'antd';
 const TextArea = Input.TextArea;
@@ -24,133 +26,86 @@ const Password = Input.Password;
 const TimeRangePicker = TimePicker.RangePicker;
 const DateRangePicker = DatePicker.RangePicker;
 
+const compoents: {[propName: string]: any;} = {
+  button: Button,
+  text: Input,
+  textarea: TextArea,
+  search: Search,
+  password: Password,
+  cascader: Cascader,
+  select: Select,
+  autocomplete: AutoComplete,
+  inputnumber: InputNumber,
+  number: InputNumber,
+  rate: Rate,
+  slider: Slider,
+  switch: Switch,
+  timepicker: TimePicker,
+  timerange: TimeRangePicker,
+  datepicker: DatePicker,
+  daterange: DateRangePicker,
+  treeselect: TreeSelect,
+  checkbox: Checkbox,
+  checkboxgroup: Checkbox.Group,
+  radio: Radio,
+  radiogroup: Radio.Group,
+  transfer: Transfer,
+  upload: Upload,
+};
+
+function inputComponent(Component: any, type: string, params: any) {
+  if (type === 'button') {
+    const { buttonType, ...restField } = params;
+    return <Button {...restField} type={buttonType} />;
+  }
+
+  if (type === 'upload') {
+    const { fieldName, ...restField } = params;
+    return <Upload {...restField} name={fieldName} />;
+  }
+
+  if (type === 'checkboxgroup' || type === 'radiogroup') {
+    const { direction, options, ...restField } = params;
+    const ChildComponent = type === 'checkboxgroup' ? Checkbox : Radio;
+    if (direction) {
+      const opts = options.map(
+        (
+          item: { label: string; value: string | number; children?: any },
+          ii: number
+        ) => {
+          return (
+            <ChildComponent
+              key={`${type}-${item.value}-${ii}`}
+              value={item.value}
+            >
+              {item.label}
+              {item.children}
+            </ChildComponent>
+          );
+        }
+      );
+      return (
+        <Component {...restField}>
+          <Space direction={direction}>{opts}</Space>
+        </Component>
+      );
+    }
+    return <Component {...restField} />;
+  }
+
+  return <Component {...params} />;
+}
+
 function generateInput(inputConfig: InputType) {
   if (React.isValidElement(inputConfig)) {
     return inputConfig;
   }
-
-  let { type, buttonType, direction, ...restField } = inputConfig;
-  const tempRestField = restField;
-  type = type && type.toLowerCase();
-  switch (type) {
-    case 'button':
-      return <Button {...restField} type={buttonType} />;
-      break;
-    case 'text':
-      return <Input {...restField} />;
-      break;
-    case 'textarea':
-      return <TextArea {...restField} />;
-      break;
-    case 'search':
-      return <Search {...restField} />;
-      break;
-    case 'password':
-      return <Password {...restField} />;
-      break;
-
-    case 'cascader':
-      return <Cascader {...restField} />;
-      break;
-    case 'select':
-      return <Select {...restField} />;
-      break;
-    case 'autocomplete':
-      return <AutoComplete {...restField} />;
-      break;
-    case 'inputnumber':
-      return <InputNumber {...restField} />;
-      break;
-
-    case 'rate':
-      return <Rate {...restField} />;
-      break;
-    case 'slider':
-      return <Slider {...restField} />;
-      break;
-    case 'switch':
-      return <Switch {...restField} />;
-      break;
-    case 'timepicker':
-      return <TimePicker {...restField} />;
-      break;
-
-    case 'timerange':
-      return <TimeRangePicker {...restField} />;
-      break;
-
-    case 'treeselect':
-      return <TreeSelect {...restField} />;
-      break;
-    case 'datepicker':
-      return <DatePicker {...restField} />;
-      break;
-    case 'daterange':
-      return <DateRangePicker {...restField} />;
-      break;
-    // CheckboxGroup
-    case 'checkbox':
-      return <Checkbox {...restField} />;
-      break;
-
-    case 'checkboxgroup':
-      if (direction) {
-        const { options, ...restField } = tempRestField;
-        const opts = options.map(
-          (
-            item: { label: string; value: string | number; children?: any },
-            ii: number
-          ) => {
-            return (
-              <Checkbox
-                key={`checkboxgroup-${item.value}-${ii}`}
-                value={item.value}
-              >
-                {item.label}
-              </Checkbox>
-            );
-          }
-        );
-        return (
-          <Checkbox.Group {...restField}>
-            <Space direction={direction}>{opts}</Space>
-          </Checkbox.Group>
-        );
-      }
-      return <Checkbox.Group {...restField} />;
-      break;
-
-    case 'radio':
-      return <Radio {...restField} />;
-      break;
-
-    case 'radiogroup':
-      if (direction) {
-        const { options, ...restField } = tempRestField;
-        const opts = options.map(
-          (
-            item: { label: string; value: string | number; children?: any },
-            ii: number
-          ) => {
-            return (
-              <Radio value={item.value} key={`radiogroup-${item.value}-${ii}`}>
-                {item.label}
-                {item.children}
-              </Radio>
-            );
-          }
-        );
-        return (
-          <Radio.Group {...restField}>
-            <Space direction={direction}>{opts}</Space>
-          </Radio.Group>
-        );
-      }
-      return <Radio.Group {...restField} />;
-      break;
-
-    default:
-      return null;
+  const { type, ...restField } = inputConfig;
+  if (type) {
+    return inputComponent(compoents[type], type, restField);
+  } else {
+    console.warn('需要指定组件type');
+    return null
   }
 }
 
