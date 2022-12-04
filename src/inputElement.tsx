@@ -26,7 +26,7 @@ const Password = Input.Password;
 const TimeRangePicker = TimePicker.RangePicker;
 const DateRangePicker = DatePicker.RangePicker;
 
-const compoents: {[propName: string]: any;} = {
+const compoents: { [propName: string]: any } = {
   button: Button,
   text: Input,
   textarea: TextArea,
@@ -66,8 +66,8 @@ function inputComponent(Component: any, type: string, params: any) {
 
   if (type === 'checkboxgroup' || type === 'radiogroup') {
     const { direction, options, ...restField } = params;
-    const ChildComponent = type === 'checkboxgroup' ? Checkbox : Radio;
     if (direction) {
+      const ChildComponent = type === 'checkboxgroup' ? Checkbox : Radio;
       const opts = options.map(
         (
           item: { label: string; value: string | number; children?: any },
@@ -90,7 +90,7 @@ function inputComponent(Component: any, type: string, params: any) {
         </Component>
       );
     }
-    return <Component {...restField} />;
+    return <Component {...restField} options={options} />;
   }
 
   return <Component {...params} />;
@@ -105,7 +105,7 @@ function generateInput(inputConfig: InputType) {
     return inputComponent(compoents[type], type, restField);
   } else {
     console.warn('需要指定组件type');
-    return null
+    return null;
   }
 }
 

@@ -74,8 +74,8 @@ function inputComponent(Component, type, params) {
     }
     if (type === 'checkboxgroup' || type === 'radiogroup') {
         var direction = params.direction, options = params.options, restField = __rest(params, ["direction", "options"]);
-        var ChildComponent_1 = type === 'checkboxgroup' ? Checkbox : Radio;
         if (direction) {
+            var ChildComponent_1 = type === 'checkboxgroup' ? Checkbox : Radio;
             var opts = options.map(function (item, ii) {
                 return (React.createElement(ChildComponent_1, { key: "".concat(type, "-").concat(item.value, "-").concat(ii), value: item.value },
                     item.label,
@@ -84,7 +84,7 @@ function inputComponent(Component, type, params) {
             return (React.createElement(Component, __assign({}, restField),
                 React.createElement(Space, { direction: direction }, opts)));
         }
-        return React.createElement(Component, __assign({}, restField));
+        return React.createElement(Component, __assign({}, restField, { options: options }));
     }
     return React.createElement(Component, __assign({}, params));
 }
