@@ -93,7 +93,13 @@ function generateInput(inputConfig) {
         return inputConfig;
     }
     var type = inputConfig.type, restField = __rest(inputConfig, ["type"]);
-    return inputComponent(compoents[type], type, restField);
+    if (type) {
+        return inputComponent(compoents[type], type, restField);
+    }
+    else {
+        console.warn('需要指定组件type');
+        return null;
+    }
 }
 var eventsString = ['blur', 'focus'];
 function isEventProperty(attribut) {
