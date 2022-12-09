@@ -21,7 +21,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 import * as React from 'react';
-import { Form, Space } from 'antd';
+import { Form, Space, Row } from 'antd';
 var WrapFormItem = function (props) {
     var align = props.align, direction = props.direction, size = props.size, split = props.split, wrap = props.wrap, block = props.block, compact = props.compact, children = props.children, restField = __rest(props, ["align", "direction", "size", "split", "wrap", "block", "compact", "children"]);
     var isSpace = align || direction || size || split || wrap || block || compact;
@@ -47,7 +47,7 @@ var WrapFormItem = function (props) {
 };
 var WrapMultipleItem = function (props) {
     var type = props.type, inputElement = props.inputElement, restField = __rest(props, ["type", "inputElement"]);
-    var containerType = type === 'formItem' || type === 'item' ? 'item' : 'space'; // ??? list
+    var containerType = type === 'formItem' || type === 'item' ? 'item' : type || 'space'; // ??? list
     var theChildren = inputElement.map(function (sub) {
         if (sub.type === 'direct-union-callback') {
             return sub.memo;
@@ -60,6 +60,9 @@ var WrapMultipleItem = function (props) {
             return (React.createElement(Form.Item, __assign({}, restField_1, { key: key }), inputElement_1));
         }
     });
+    if (containerType === 'grid') {
+        return React.createElement(Row, null, theChildren);
+    }
     if (containerType === 'item') {
         return React.createElement(WrapFormItem, __assign({}, restField), theChildren);
     }

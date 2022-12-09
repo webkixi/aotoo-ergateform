@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Space } from 'antd';
+import { Form, Space, Row } from 'antd';
 
 const WrapFormItem: React.FC<any> = (props) => {
   const {
@@ -44,7 +44,7 @@ const WrapFormItem: React.FC<any> = (props) => {
 const WrapMultipleItem: React.FC<InputType> = (props) => {
   const { type, inputElement, ...restField } = props;
   const containerType =
-    type === 'formItem' || type === 'item' ? 'item' : 'space'; // ??? list
+    type === 'formItem' || type === 'item' ? 'item' : type || 'space'; // ??? list
 
   const theChildren: any[] = inputElement.map((sub: InputType) => {
     if (sub.type === 'direct-union-callback') {
@@ -60,6 +60,10 @@ const WrapMultipleItem: React.FC<InputType> = (props) => {
       );
     }
   });
+
+  if (containerType === 'grid') {
+    return <Row>{theChildren}</Row>;
+  }
 
   if (containerType === 'item') {
     return <WrapFormItem {...restField}>{theChildren}</WrapFormItem>;
