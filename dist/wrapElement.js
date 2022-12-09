@@ -61,7 +61,7 @@ var WrapMultipleItem = function (props) {
         }
     });
     if (containerType === 'grid') {
-        return React.createElement(Row, null, theChildren);
+        return React.createElement(Row, __assign({}, restField), theChildren);
     }
     if (containerType === 'item') {
         return React.createElement(WrapFormItem, __assign({}, restField), theChildren);

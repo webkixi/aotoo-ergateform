@@ -62,7 +62,7 @@ const WrapMultipleItem: React.FC<InputType> = (props) => {
   });
 
   if (containerType === 'grid') {
-    return <Row>{theChildren}</Row>;
+    return <Row {...restField}>{theChildren}</Row>;
   }
 
   if (containerType === 'item') {
