@@ -11,10 +11,10 @@ import 'antd/dist/reset.css';
  * antd 表单配置化，模块化的封装
  * https://www.github.com/webkixi/aotoo-ergateform
  */
-function ErgateForm(formConfig: FormType) {
+function ErgateForm(props: FormType) {
   const [_form] = Form.useForm();
   const [selectOp] = useSelectOprate();
-  const { data, state, ...restField } = formConfig;
+  const { data, state, ...restField } = props;
   const formProperty = restField;
   const form: any = formProperty.form || _form;
   const [status, setStatus] = React.useState(state || {});
@@ -74,6 +74,7 @@ function ErgateForm(formConfig: FormType) {
           <WrapInputElement {...field} />
         )
       )}
+      {props.children}
     </Form>
   );
 }

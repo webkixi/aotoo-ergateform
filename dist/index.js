@@ -32,10 +32,10 @@ import 'antd/dist/reset.css';
  * antd 表单配置化，模块化的封装
  * https://www.github.com/webkixi/aotoo-ergateform
  */
-function ErgateForm(formConfig) {
+function ErgateForm(props) {
     var _form = Form.useForm()[0];
     var selectOp = useSelectOprate()[0];
-    var data = formConfig.data, state = formConfig.state, restField = __rest(formConfig, ["data", "state"]);
+    var data = props.data, state = props.state, restField = __rest(props, ["data", "state"]);
     var formProperty = restField;
     var form = formProperty.form || _form;
     var _a = React.useState(state || {}), status = _a[0], setStatus = _a[1];
@@ -69,9 +69,11 @@ function ErgateForm(formConfig) {
         formContext: formContext,
         status: status,
     });
-    return (React.createElement(Form, __assign({}, formProperty), fieldsData.map(function (field) {
-        return field.type == 'direct-union-callback' ? (field.memo) : React.isValidElement(field) ? (field) : (React.createElement(WrapInputElement, __assign({}, field)));
-    })));
+    return (React.createElement(Form, __assign({}, formProperty),
+        fieldsData.map(function (field) {
+            return field.type == 'direct-union-callback' ? (field.memo) : React.isValidElement(field) ? (field) : (React.createElement(WrapInputElement, __assign({}, field)));
+        }),
+        props.children));
 }
 // 为了方便，不用单独引用antd
 export { Form } from 'antd';
