@@ -86,14 +86,14 @@ export function adapterItemConfig(current, data, operate, index) {
                 }
             });
         }
-        var $input = current.$input, label = current.label, name_1 = current.name, key = current.key, union = current.union, restField = __rest(current, ["$input", "label", "name", "key", "union"]);
+        var $input = current.$input, label = current.label, name_1 = current.name, key = current.key, union_1 = current.union, restField = __rest(current, ["$input", "label", "name", "key", "union"]);
         var inputEle = null;
         var _key = key || name_1;
         if (Array.isArray($input)) {
             inputEle = $input;
         }
         else {
-            inputEle = (React.createElement(InputUnitElement, __assign({ selfUnion: union }, $input, { operate: operate })));
+            inputEle = (React.createElement(InputUnitElement, __assign({ selfUnion: union_1 }, $input, { operate: operate })));
         }
         return {
             current: __assign({ label: label, name: name_1, inputElement: inputEle, key: _key }, restField),

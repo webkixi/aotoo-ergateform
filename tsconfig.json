@@ -23,7 +23,7 @@
   },
   "include": [
     "./src/**/*", // *** TypeScript文件应该进行类型检查 ***
-    "./ergateform.d.ts"
+    "./ergateform.d.ts",
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["dist"]
 }
